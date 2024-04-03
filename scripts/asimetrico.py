@@ -99,7 +99,7 @@ print(descifrado)
 pem = private_key.private_bytes(
    encoding=serialization.Encoding.PEM,
    format=serialization.PrivateFormat.PKCS8,
-   encryption_algorithm=serialization.BestAvailableEncryption(b'alv locotr')
+   encryption_algorithm=serialization.BestAvailableEncryption(b'si') # se puede usar una contraseña creada y guardada en el .env para cifrar la llave privada
 )
 pem.splitlines()[0]
 with open("key.pem","wb") as llavePrivada:
@@ -109,7 +109,7 @@ with open("key.pem","wb") as llavePrivada:
 with open("key.pem", "rb") as llavePrivada:
     llave = serialization.load_pem_private_key(
         llavePrivada.read(),
-        password=b'alv locotr',
+        password=b'si',
         backend=default_backend()
     )
 
