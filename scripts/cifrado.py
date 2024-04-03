@@ -15,7 +15,7 @@ f = Fernet(clave)
 
 # Encriptar Archivo
 def crifrado(nom, clave):
-    f = Fernet(clave)
+    f = Fernet(clave)   
     with open(nom, "rb") as file:
         info = file.read()
     infoEncriptada = f.encrypt(info)
@@ -46,6 +46,3 @@ clave = cargarClave()
 nom = "prueba.txt"
 descifrado(nom, clave)
 #"""
-
-
-
