@@ -1,130 +1,118 @@
 # Librerias para el cifrado asimetrico
-from cryptography.hazmat.backends import default_backend
-from cryptography.hazmat.primitives.asymmetric import rsa
+from ecies.utils import generate_eth_key, generate_key
+from ecies import encrypt, decrypt
+from cryptography.fernet import Fernet
+import binascii
+import base64
 from cryptography.hazmat.primitives import hashes
-from cryptography.hazmat.primitives import serialization
-from cryptography.hazmat.primitives.asymmetric import padding
-
-# Utilizaremos el método "generate_private_key" para generar nuestra clave, se le asignan algunos parametros
-private_key = rsa.generate_private_key(
-     public_exponent=65537,
-     key_size=2048,
-     backend=default_backend()
-)
-
-# Se genera la clave pública
-public_key = private_key.public_key()
-
-# Se procede a firmar el mensaje con la clave privada
-mensaje = b"Mensaje que se va a firmar"
-firma = private_key.sign(
-     mensaje,
-     padding.PSS(
-         mgf=padding.MGF1(hashes.SHA256()),
-         salt_length=padding.PSS.MAX_LENGTH
-     ),
-     hashes.SHA256()
-)
-
+from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
+from cryptography.fernet import Fernet, InvalidToken
+import os
 
 """
-Al intentar verificar el mensaje que no fue firmado con la misma firma, se marca un error
-# Se genera la clave pública
-public_key = private_key.public_key()
-public_key2 = private_key.public_key()
+# Se genera la llave privada
+privKey = generate_eth_key()
+privKeyHex = privKey.to_hex()
 
-# Se procede a firmar el mensaje con la clave privada
-mensaje = b"Mensaje que se va a firmar"
-mensaje2 = b"si"
-firma = private_key.sign(
-     mensaje,
-     padding.PSS(
-         mgf=padding.MGF1(hashes.SHA256()),
-         salt_length=padding.PSS.MAX_LENGTH
-     ),
-     hashes.SHA256()
-)
-firma2 = private_key.sign(
-     mensaje2,
-     padding.PSS(
-         mgf=padding.MGF1(hashes.SHA256()),
-         salt_length=padding.PSS.MAX_LENGTH
-     ),
-     hashes.SHA256()
-)
-print(firma)
-print(public_key.verify(
-    firma2,
-    mensaje,
-    padding.PSS(
-        mgf=padding.MGF1(hashes.SHA256()),
-        salt_length=padding.PSS.MAX_LENGTH
-    ),
-    hashes.SHA256()
-)) # Imprime True si la firma es correcta
+# Se genera la llave publica
+pubKeyHex = privKey.public_key.to_hex()
 
+print("Encryption public key:", pubKeyHex)
+print("Decryption private key:", privKeyHex)
+
+plaintext = b'Some plaintext for encryption'
+print("Plaintext:", plaintext)
+
+encrypted = encrypt(pubKeyHex, plaintext)
+print("Encrypted:", binascii.hexlify(encrypted))
+
+decrypted = decrypt(privKeyHex, encrypted)
+print("Decrypted:", decrypted)
 """
-
-"""
-Procedemos a cifrar el dato.
-Para ello utilizaremos el método encrytp.
-"""
-#mensaje = b"Dato para cifrar"
-textoCifrado = public_key.encrypt(
-     mensaje,
-     padding.OAEP(
-         mgf=padding.MGF1(algorithm=hashes.SHA256()),
-         algorithm=hashes.SHA256(),
-         label=None
-     )
- )
-print(textoCifrado)
-"""
-Ahora vamos a descifrar el mensaje. Para ello utilizaremos el 
-método decrypt.
-"""
-descifrado = private_key.decrypt(
-     textoCifrado,
-     padding.OAEP(
-         mgf=padding.MGF1(algorithm=hashes.SHA256()),
-         algorithm=hashes.SHA256(),
-         label=None
-     )
- )
- 
-print(descifrado)
-
-
-# Guardar la clave
-pem = private_key.private_bytes(
-   encoding=serialization.Encoding.PEM,
-   format=serialization.PrivateFormat.PKCS8,
-   encryption_algorithm=serialization.BestAvailableEncryption(b'si') # se puede usar una contraseña creada y guardada en el .env para cifrar la llave privada
-)
-pem.splitlines()[0]
-with open("key.pem","wb") as llavePrivada:
-		llavePrivada.write(pem)
-
-# Leer la clave
-with open("key.pem", "rb") as llavePrivada:
-    llave = serialization.load_pem_private_key(
-        llavePrivada.read(),
-        password=b'si',
-        backend=default_backend()
+def generateKey(pswd):
+    password = pswd.encode()  
+    salt = b'\x94+\x19\x0bF1\x10\xe0\xe0#\x16\xcd\x7f\x86pg'
+    kdf = PBKDF2HMAC(
+        algorithm=hashes.SHA256(),
+        length=32,
+        salt=salt,
+        iterations=100000,
     )
+    key = base64.urlsafe_b64encode(kdf.derive(password))  
+    return key
 
-# Prueba de que se leyo correctamente
-print(llave)
+# Funcion para guardar la llave privada cifrada con fernet por una contraseña ingresada
+def guardarLlavePrivada(privateKeyHex, password):
+    with open("keys/private.pem", "wt") as llavePrivada:
+        f = Fernet(password)
+        privateKey = f.encrypt(privateKeyHex.encode())
+        llavePrivada.write(privateKey.decode())
 
-descifrado = llave.decrypt(
-     textoCifrado,
-     padding.OAEP(
-         mgf=padding.MGF1(algorithm=hashes.SHA256()),
-         algorithm=hashes.SHA256(),
-         label=None
-     )
- )
- 
-print(descifrado)
+# Funcion para guardar la llave publica
+def guardarLLavePublica(publicKeyHex):
+    with open("keys/public.pem", "wt") as llavePublica:
+        llavePublica.write(publicKeyHex)
+
+# Funcion para leer la llave privada, se ingresa la contraseña para descifrarla
+def leerLlavePrivada(password):
+    with open("keys/private.pem", "rt") as llavePrivada:
+        key = generateKey(password)
+        f = Fernet(key)
+        privateKey = f.decrypt(llavePrivada.read().encode())
+        privKeyHex = privateKey.decode()
+        return privKeyHex
+
+# Funcion para leer la llave publica
+def leerLlavePublica():
+    with open("keys/public.pem", "rt") as llavePublica:
+        return llavePublica.read()
+
+# Funcion para generar un certificado, se ingresa una contraseña para al guardar la llave privada este cifrada
+def generarCertificado(password):
+    # Generar llave privada
+    privKey = generate_eth_key()
+    privKeyHex = privKey.to_hex()
+    #print(privKeyHex)
+    # Genera la key para el cifrado
+    key = generateKey(password)
+    
+    # Generar llave publica
+    pubKeyHex = privKey.public_key.to_hex()
+
+    # Guardar la llave privada
+    guardarLlavePrivada(privKeyHex, key)
+
+    # Guardar la llave publica
+    guardarLLavePublica(pubKeyHex)
+
+    return privKeyHex, pubKeyHex
+
+# Funcion para cifrar con la llave publica
+def cifrado(texto, publicKeyHex):
+    encrypted = encrypt(publicKeyHex, texto)
+    return encrypted
+
+# Funcion para descifrar con la llave privada
+def descifrado(cifrado, privateKeyHex):
+    decrypted = decrypt(privateKeyHex, cifrado)
+    return decrypted
 
 
+
+password = "124"
+
+cer = generarCertificado(password)
+print(cer)
+
+leer = leerLlavePrivada(password)
+print(leer)
+
+lp = leerLlavePublica()
+print(lp)
+
+
+plaintext = b"si"
+cifred = cifrado(plaintext, lp)
+des = descifrado(cifred, leer)
+print(cifred)
+print(des)
