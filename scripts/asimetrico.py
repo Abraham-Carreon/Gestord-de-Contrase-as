@@ -101,8 +101,8 @@ def descifrado(cifrado, privateKeyHex):
 
 password = "124"
 
-cer = generarCertificado(password)
-print(cer)
+#cer = generarCertificado(password)
+#print(cer)
 
 leer = leerLlavePrivada(password)
 print(leer)
