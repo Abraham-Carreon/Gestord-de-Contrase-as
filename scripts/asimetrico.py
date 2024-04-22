@@ -69,6 +69,10 @@ def leerLlavePublica():
 
 # Funcion para generar un certificado, se ingresa una contraseña para al guardar la llave privada este cifrada
 def generarCertificado(password):
+    # Revisa si existe la carpeta keys, si no la crea
+    if not os.path.exists('keys'):
+        os.makedirs('keys')
+    
     # Generar llave privada
     privKey = generate_eth_key()
     privKeyHex = privKey.to_hex()
@@ -96,8 +100,6 @@ def cifrado(texto, publicKeyHex):
 def descifrado(cifrado, privateKeyHex):
     decrypted = decrypt(privateKeyHex, cifrado)
     return decrypted
-
-
 
 password = "124"
 

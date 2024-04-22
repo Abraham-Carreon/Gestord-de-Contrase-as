@@ -1,4 +1,5 @@
 import json
+import cifrado as cif
 
 # Funcion para guardar los registros de los usuarios con su llave publica y privada
 def guardarRegistro(usuario, publicKeyHex, privateKeyHex):
@@ -88,6 +89,9 @@ def eliminarDatos(usuario, nombre):
                 return True
         return False  # Devuelve False si no encuentra el usuario a eliminar
 
+# Prueba para cifrar los archivos
+#cif.cifrado("bd.json", cif.cargarClave())
+#cif.descifrado("bd.json", cif.cargarClave())
 # Prueba de las funciones
 
 usuario = "pedro"

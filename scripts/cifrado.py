@@ -1,20 +1,27 @@
 from cryptography.fernet import Fernet
+import os
 
 def generaClave():
-	clave = Fernet.generate_key()
-	with open("clave.key","wb") as archivo_clave:
-		archivo_clave.write(clave)
+    # Revisar que exista una clave, sino la crea
+    try:
+        open("c/clave.key", "r")
+    except FileNotFoundError:
+        os.mkdir("c")
+        clave = Fernet.generate_key()
+        with open("c/clave.key","wb") as archivo_clave:
+            archivo_clave.write(clave)
 
 def cargarClave():
-	return open("clave.key","rb").read()
+	return open("c/clave.key","rb").read()
 
+generaClave()
 clave = cargarClave()
 
 # Inicio de Fernet
 f = Fernet(clave)
 
 # Encriptar Archivo
-def crifrado(nom, clave):
+def cifrado(nom, clave):
     f = Fernet(clave)   
     with open(nom, "rb") as file:
         info = file.read()
@@ -32,7 +39,6 @@ def descifrado(nom, clave):
         file.write(info)
 
 # Prueba 
-
 # Cifrado
 """
 clave = cargarClave()
@@ -41,8 +47,8 @@ cifrado(nom, clave)
 """
 
 # Desencriptar
-#"""
+"""
 clave = cargarClave()
 nom = "prueba.txt"
 descifrado(nom, clave)
-#"""
+"""
