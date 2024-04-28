@@ -1,6 +1,10 @@
 from cryptography.fernet import Fernet
 import os
 
+rot13 = str.maketrans(
+    'ABCDEFGHIJKLMabcdefghijklmNOPQRSTUVWXYZnopqrstuvwxyz',
+    'NOPQRSTUVWXYZnopqrstuvwxyzABCDEFGHIJKLMabcdefghijklm')
+
 def generaClave():
     # Revisar que exista una clave, sino la crea
     try:
@@ -9,10 +13,16 @@ def generaClave():
         os.mkdir("c")
         clave = Fernet.generate_key()
         with open("c/clave.key","wb") as archivo_clave:
+            clave.translate(rot13)
             archivo_clave.write(clave)
-
+            
+# Carga la clave y le quita el rot13 para poder usarlo
 def cargarClave():
-	return open("c/clave.key","rb").read()
+    with open("c/clave.key","rb") as archivo_clave:
+        clave = archivo_clave.read()
+        clave = clave.decode()
+        clave = clave.translate(rot13)
+        return clave.encode()
 
 generaClave()
 clave = cargarClave()
