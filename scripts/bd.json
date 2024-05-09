@@ -1,8 +1,1 @@
-{
-    "0": {
-        "pedro": {
-            "publicKey": "123",
-            "privateKey": "gAAAAABmEItOecWVDYgo5loPV6ssPDReTMg47GXL3Q8-dK82IcGsxbXDMv6SWSvfTDavRTCnE6b4-2aIKLubxdQg9T0RJi3IQ0TqdwIVsqth5jYFhOa8ARvQpKvo0UGmuAlNVELKSq56TVR8nFa82yLxxaKklKJvkg1dc0YA4fLcJrDg_HFFjds="
-        }
-    }
-}
+{"0": {"ola": {"publicKey": "ola", "privateKey": ["0xb196ac5521dbdb9fb765ae2bef1c45b4d3157ed25eb1ee45b14ffc85cba905c3", "0x62c61224b7ca280a880f3ceebd9609580147c8cc6e6f429fd3a66543dbef2065eae73a353a7c1e2ca06f562844d941cf994e5ce4097b7c1b020e41f563dc23ea"]}}, "1": {"si": {"publicKey": "0x098b7875d29749d65a3cec259aa0aa305de542a3e1e2441db82a1d49d39e7435e245b6753cac3e05c343aaeb2e6d8b061feab075ea39f9622e73096d7cd441a3", "privateKey": "0x2d6f605f530399dc97d6984262496788adf14b0e8f15f42ac52da74301ee3d0f"}}}

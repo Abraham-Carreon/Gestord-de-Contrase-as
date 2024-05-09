@@ -24,14 +24,10 @@ def cargarClave():
         clave = clave.translate(rot13)
         return clave.encode()
 
-generaClave()
-clave = cargarClave()
-
-# Inicio de Fernet
-f = Fernet(clave)
-
 # Encriptar Archivo
 def cifrado(nom, clave):
+    generaClave()
+    clave = cargarClave()
     f = Fernet(clave)   
     with open(nom, "rb") as file:
         info = file.read()
@@ -41,6 +37,8 @@ def cifrado(nom, clave):
 
 # Desencriptar Archivo
 def descifrado(nom, clave):
+    generaClave()
+    clave = cargarClave()
     f = Fernet(clave)
     with open(nom, "rb") as file:
         infoEncriptada = file.read()

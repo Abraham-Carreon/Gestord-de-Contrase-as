@@ -93,13 +93,13 @@ def eliminarDatos(usuario, nombre):
 #cif.cifrado("bd.json", cif.cargarClave())
 #cif.descifrado("bd.json", cif.cargarClave())
 # Prueba de las funciones
-
+"""
 usuario = "pedro"
 publicKeyHex = "123"
 
 with open("keys/private.pem", "rt") as llavePrivada:
     privateKey = llavePrivada.read()
-    
+"""   
 
 #guardarRegistro(usuario, publicKeyHex, privateKey)
 

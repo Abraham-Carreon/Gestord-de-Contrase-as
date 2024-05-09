@@ -1,16 +1,19 @@
-from coincurve.keys import PrivateKey
+#from coincurve.keys import PrivateKey
 from asimetrico import generarCertificado, leerLlavePublica
 from bd import guardarRegistro, verificarUsuario
+
 def registro():
-  password = input("ingrese su contraseña: ")
-  usuario = input("ingrese su usuario: ")
+  usuario = str(input("ingrese su usuario: "))
+  password = str(input("ingrese su contraseña: "))
+  
   if password and usuario:
-    privateKeyHex = generarCertificado(password)
-    publicKeyHex = password
+    privateKeyHex, publicKeyHex = generarCertificado(password)
+    print(privateKeyHex, publicKeyHex)
+    
     guardarRegistro(usuario, publicKeyHex, privateKeyHex)
     print("registro exitoso")
-    print("Encryption public key:", publicKeyHex)
-    print("Decryption private key:", privateKeyHex)
+    #print("Encryption public key:", publicKeyHex)
+    #print("Decryption private key:", privateKeyHex)
     
   else:
     print("ingrese un usuario o contraseña valido")
@@ -32,5 +35,5 @@ def iniciar_sesion():
 
 
 registro()
-iniciar_sesion()
+#iniciar_sesion()
 

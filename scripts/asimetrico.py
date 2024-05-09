@@ -9,26 +9,6 @@ from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 from cryptography.fernet import Fernet, InvalidToken
 import os
 
-"""
-# Se genera la llave privada
-privKey = generate_eth_key()
-privKeyHex = privKey.to_hex()
-
-# Se genera la llave publica
-pubKeyHex = privKey.public_key.to_hex()
-
-print("Encryption public key:", pubKeyHex)
-print("Decryption private key:", privKeyHex)
-
-plaintext = b'Some plaintext for encryption'
-print("Plaintext:", plaintext)
-
-encrypted = encrypt(pubKeyHex, plaintext)
-print("Encrypted:", binascii.hexlify(encrypted))
-
-decrypted = decrypt(privKeyHex, encrypted)
-print("Decrypted:", decrypted)
-"""
 def generateKey(pswd):
     password = pswd.encode()  
     salt = b'\x94+\x19\x0bF1\x10\xe0\xe0#\x16\xcd\x7f\x86pg'
@@ -101,20 +81,20 @@ def descifrado(cifrado, privateKeyHex):
     decrypted = decrypt(privateKeyHex, cifrado)
     return decrypted
 
-password = "124"
+#password = "124"
 
 #cer = generarCertificado(password)
 #print(cer)
 
-leer = leerLlavePrivada(password)
-print(leer)
+#leer = leerLlavePrivada(password)
+#print(leer)
 
-lp = leerLlavePublica()
-print(lp)
+#lp = leerLlavePublica()
+#print(lp)
 
 
-plaintext = b"si"
-cifred = cifrado(plaintext, lp)
-des = descifrado(cifred, leer)
-print(cifred)
-print(des)
+#plaintext = b"si"
+#cifred = cifrado(plaintext, lp)
+#des = descifrado(cifred, leer)
+#print(cifred)
+#print(des)
