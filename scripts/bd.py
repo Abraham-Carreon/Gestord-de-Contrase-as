@@ -93,17 +93,17 @@ def eliminarDatos(usuario, nombre):
 #cif.cifrado("bd.json", cif.cargarClave())
 #cif.descifrado("bd.json", cif.cargarClave())
 # Prueba de las funciones
-"""
-usuario = "pedro"
+#"""
+usuario = "abraham"
 publicKeyHex = "123"
 
 with open("keys/private.pem", "rt") as llavePrivada:
     privateKey = llavePrivada.read()
-"""   
+#"""   
 
 #guardarRegistro(usuario, publicKeyHex, privateKey)
 
-#print(verificarUsuario(usuario, privateKey))  #Deberia imprimir True
+print(verificarUsuario(usuario, "0x9679e35fc49d853ca07539e5a18964a77586b5dbf9bf0d426651e510a7e25627"))  #Deberia imprimir True
 
 #guardarDatos("pedro", "alfjalsd", "uanl", "123")
 #print(leerDatos("pedro"))

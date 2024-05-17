@@ -9,6 +9,7 @@ from cifrado import cargarClave, cifrado, descifrado, cargarClave, generaClave
 def registro(usuario, password):
     if password and usuario:
         privateKeyHex, publicKeyHex = generarCertificado(password)
+        print(privateKeyHex, publicKeyHex)
         guardarRegistro(usuario, publicKeyHex, privateKeyHex)
         messagebox.showinfo("Registro exitoso", f"Recuerde guardar su llave privada para iniciar sesión: {privateKeyHex}")
     else:

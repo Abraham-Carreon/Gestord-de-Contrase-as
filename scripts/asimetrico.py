@@ -27,6 +27,7 @@ def guardarLlavePrivada(privateKeyHex, password):
         f = Fernet(password)
         privateKey = f.encrypt(privateKeyHex.encode())
         llavePrivada.write(privateKey.decode())
+        return privateKey.decode()
 
 # Funcion para guardar la llave publica
 def guardarLLavePublica(publicKeyHex):
@@ -40,7 +41,6 @@ def leerLlavePrivada(password):
         f = Fernet(key)
         privateKey = f.decrypt(llavePrivada.read().encode())
         privKeyHex = privateKey.decode()
-        return privKeyHex
 
 # Funcion para leer la llave publica
 def leerLlavePublica():
@@ -56,7 +56,7 @@ def generarCertificado(password):
     # Generar llave privada
     privKey = generate_eth_key()
     privKeyHex = privKey.to_hex()
-    #print(privKeyHex)
+    
     # Genera la key para el cifrado
     key = generateKey(password)
     
@@ -64,12 +64,12 @@ def generarCertificado(password):
     pubKeyHex = privKey.public_key.to_hex()
 
     # Guardar la llave privada
-    guardarLlavePrivada(privKeyHex, key)
+    llavePrivada = guardarLlavePrivada(privKeyHex, key)
 
     # Guardar la llave publica
     guardarLLavePublica(pubKeyHex)
 
-    return privKeyHex, pubKeyHex
+    return llavePrivada, pubKeyHex
 
 # Funcion para cifrar con la llave publica
 def cifrado(texto, publicKeyHex):
