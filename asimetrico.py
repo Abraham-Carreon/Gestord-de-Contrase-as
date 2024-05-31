@@ -25,9 +25,8 @@ def generateKey(pswd):
 def guardarLlavePrivada(privateKeyHex, password):
     with open("keys/private.pem", "wt") as llavePrivada:
         f = Fernet(password)
-        privateKey = f.encrypt(privateKeyHex.encode())
+        privateKey = privateKeyHex.encode()
         llavePrivada.write(privateKey.decode())
-        return privateKey.decode()
 
 # Funcion para guardar la llave publica
 def guardarLLavePublica(publicKeyHex):
@@ -41,6 +40,7 @@ def leerLlavePrivada(password):
         f = Fernet(key)
         privateKey = f.decrypt(llavePrivada.read().encode())
         privKeyHex = privateKey.decode()
+        return privKeyHex
 
 # Funcion para leer la llave publica
 def leerLlavePublica():
@@ -56,7 +56,7 @@ def generarCertificado(password):
     # Generar llave privada
     privKey = generate_eth_key()
     privKeyHex = privKey.to_hex()
-    
+    #print(privKeyHex)
     # Genera la key para el cifrado
     key = generateKey(password)
     
@@ -64,12 +64,12 @@ def generarCertificado(password):
     pubKeyHex = privKey.public_key.to_hex()
 
     # Guardar la llave privada
-    llavePrivada = guardarLlavePrivada(privKeyHex, key)
+    guardarLlavePrivada(privKeyHex, key)
 
     # Guardar la llave publica
     guardarLLavePublica(pubKeyHex)
 
-    return llavePrivada, pubKeyHex
+    return privKeyHex, pubKeyHex
 
 # Funcion para cifrar con la llave publica
 def cifrado(texto, publicKeyHex):
@@ -80,21 +80,3 @@ def cifrado(texto, publicKeyHex):
 def descifrado(cifrado, privateKeyHex):
     decrypted = decrypt(privateKeyHex, cifrado)
     return decrypted
-
-#password = "124"
-
-#cer = generarCertificado(password)
-#print(cer)
-
-#leer = leerLlavePrivada(password)
-#print(leer)
-
-#lp = leerLlavePublica()
-#print(lp)
-
-
-#plaintext = b"si"
-#cifred = cifrado(plaintext, lp)
-#des = descifrado(cifred, leer)
-#print(cifred)
-#print(des)
