@@ -1,7 +1,7 @@
 from tkinter import *
 from tkinter import messagebox
 from asimetrico import generarCertificado, leerLlavePublica
-from bd import guardarRegistro, verificarUsuario, guardarDatos, eliminarDatos, leerDatos
+from bd import guardarRegistro, verificarUsuario, guardarDatos, eliminarDatos, leerDatos, verificarExUsuario
 from cifrado import cargarClave, cifrado, descifrado, generaClave
 import os
 
@@ -15,6 +15,10 @@ def ventana_registro():
     def registrar_usuario():
         usuario = entry_usuario.get()
         password = entry_password.get()
+        res = verificarExUsuario(usuario)
+        if res:
+            mostrar_error("Error", "El usuario ya existe, elige otro nombre de usuario")
+            return
         private_key, public_key = generarCertificado(password)
         generaClave()
         if os.path.exists("bd.json"):
@@ -41,7 +45,12 @@ def ventana_registro():
     Button(ventana_registro, text="Registrar", command=registrar_usuario).grid(row=2, columnspan=2)
 
 def iniciar_sesion(usuario, privateKeyHex):
-    descifrado("bd.json", cargarClave())  # Descifrar el archivo antes de verificar el usuario
+    try:
+        descifrado("bd.json", cargarClave())  # Descifrar el archivo antes de verificar el usuario
+    except: 
+        mostrar_error("Error", "No existe ningun usuario")
+        return
+    
     if verificarUsuario(usuario, privateKeyHex):
         messagebox.showinfo("Inicio de sesión", "Inicio de sesión exitoso")
         cifrado("bd.json", cargarClave())

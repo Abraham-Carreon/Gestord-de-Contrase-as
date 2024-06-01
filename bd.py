@@ -42,6 +42,21 @@ def verificarUsuario(usuario, private_key):
     
     return False
 
+def verificarExUsuario(usuario):
+    try:
+        with open('bd.json', 'r') as bd:
+            try:
+                data = json.load(bd)
+            except json.JSONDecodeError:
+                return False
+
+        for entry in data:
+            if entry['usuario'] == usuario:
+                return True
+    except:
+        return False
+    return False
+
 def guardarDatos(usuario, correo, nombre, contrasena):
     reg_file = 'reg.json'
     if not os.path.exists(reg_file):
